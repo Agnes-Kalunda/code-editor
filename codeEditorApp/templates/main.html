@@ -3,19 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <title>Code Editor</title>
-    
+
+    <!-- Load Ace code editor library -->
     <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.12/src/ace.js"></script>
 </head>
 <body>
     <h1>Code Editor</h1>
+
+    <!-- Create a dropdown for language selection -->
+    <label for="language">Select Language:</label>
+    <select id="language" onchange="changeEditorMode()">
+        <option value="javascript">JavaScript</option>
+        <option value="python">Python</option>
+        <option value="php">PHP</option>
+        <option value="c_cpp">C++</option>
+    </select>
+
     <!-- Create a div for the code editor -->
     <div id="editor" style="height: 500px; width: 100%;"></div>
+
+    <!-- Create a "Run" button -->
+    <button onclick="runCode()">Run</button>
+
+    <!-- Create a named output area -->
+    <div id="outputArea">
+        <h2>Output:</h2>
+        <pre id="output"></pre>
+    </div>
 
     <script>
         // Initialize Ace code editor
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");
-        editor.getSession().setMode("ace/mode/javascript");  // Sets default mode to javaScript
+        editor.getSession().setMode("ace/mode/javascript");  // Default mode is set to JavaScript
+
+        // Function to change the editor mode based on the selected language
+        function changeEditorMode() {
+            var languageSelect = document.getElementById("language");
+            var selectedLanguage = languageSelect.value;
+
+            // Set the editor mode based on the selected language
+            editor.getSession().setMode("ace/mode/" + selectedLanguage);
+        }
+
+        // Function to run the code in the Ace editor
+        function runCode() {
+            var code = editor.getValue();
+            // You can add code execution logic here based on the selected language
+            // For example, you can send the code to a server for execution using AJAX
+
+            // For demonstration, just displaying the code in the output area
+            document.getElementById("output").innerText = code;
+        }
     </script>
 </body>
 </html>
