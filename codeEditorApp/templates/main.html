@@ -2,10 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>code-editor</title>
+    <title>Code Editor</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.12/src/ace.js"></script>
 </head>
 <body>
-    
+    <h1>Code Editor</h1>
+    <!-- Create a div for the code editor -->
+    <div id="editor" style="height: 500px; width: 100%;"></div>
+
+    <script>
+        // Initialize Ace code editor
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");  // Sets default mode to javaScript
+    </script>
 </body>
 </html>
