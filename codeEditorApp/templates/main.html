@@ -6,6 +6,8 @@
 
     <!-- Load Ace code editor library -->
     <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.12/src/ace.js"></script>
+    <!-- Include jQuery for AJAX requests -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 <body>
     <h1>Code Editor</h1>
@@ -49,11 +51,24 @@
         // Function to run the code in the Ace editor
         function runCode() {
             var code = editor.getValue();
-            // You can add code execution logic here based on the selected language
-            // For example, you can send the code to a server for execution using AJAX
+            var selectedLanguage = document.getElementById("language").value;
 
-            // For demonstration, just displaying the code in the output area
-            document.getElementById("output").innerText = code;
+            // Make an AJAX request to the Django server for code execution
+            $.ajax({
+                type: "POST",
+                url: "/code_execution/run_code/",
+                data: {
+                    code: code,
+                    language: selectedLanguage
+                },
+                success: function(data) {
+                    // Display the result in the output area
+                    document.getElementById("output").innerText = data.result || data.error || "Unknown error";
+                },
+                error: function() {
+                    document.getElementById("output").innerText = "Error: Failed to communicate with the server.";
+                }
+            });
         }
     </script>
 </body>
