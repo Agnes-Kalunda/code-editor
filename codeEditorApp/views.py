@@ -8,8 +8,7 @@ def home(request):
     return render(request, 'main.html')
 
 
-
-@csrf_exempt
+@csrf_exempt  
 def run_code(request):
     if request.method == 'POST':
         try:
@@ -20,8 +19,8 @@ def run_code(request):
                 result = run_python_code(code)
             elif language == 'php':
                 result = run_php_code(code)
-            elif language == 'c_cpp':
-                result = run_c_cpp_code(code)
+            elif language == 'javascript':
+                result = run_javascript_code(code)
             else:
                 result = "Language not supported for execution."
 
@@ -32,24 +31,24 @@ def run_code(request):
 
     return JsonResponse({'error': 'Invalid request method'})
 
+# Functions for language-specific code execution
 def run_python_code(code):
     try:
-        # Run Python code using Docker
-        result = subprocess.check_output(['docker', 'run', '--rm', 'python:3.8', 'python', '-c', code], text=True)
+        result = subprocess.check_output(['python3', '-c', code], text=True, timeout=5)
         return result
-
     except subprocess.CalledProcessError as e:
         return f"Error: {e}"
 
 def run_php_code(code):
-    try:
-        # Run PHP code using Docker
-        result = subprocess.check_output(['docker', 'run', '--rm', 'php:7.4-cli', 'php', '-r', code], text=True)
-        return result
+    # Execute PHP code using a dedicated library or method
+    # You might need to install a library like phpserialize
+    import phpserialize
+    result = phpserialize.phpserialize(code)  # Replace with your actual PHP execution logic
+    return result
 
-    except subprocess.CalledProcessError as e:
-        return f"Error: {e}"
-
-def run_c_cpp_code(code):
-    
-    return "C++ code execution not implemented."
+def run_javascript_code(code):
+    # Execute JavaScript code using a JavaScript engine
+    import execjs  # Requires execjs library
+    context = execjs.compile(code)
+    result = context.call('eval', code)
+    return result

@@ -4,15 +4,30 @@
     <meta charset="UTF-8">
     <title>Code Editor</title>
 
-    <!-- Load Ace code editor library -->
     <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.12/src/ace.js"></script>
-    <!-- Include jQuery for AJAX requests -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script type="text/javascript">
+        var csrftoken = getCookie('csrftoken');
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 </head>
 <body>
     <h1>Code Editor</h1>
 
-    <!-- Create a dropdown for language selection -->
     <label for="language">Select Language:</label>
     <select id="language" onchange="changeEditorMode()">
         <option value="javascript">JavaScript</option>
@@ -21,13 +36,10 @@
         <option value="c_cpp">C++</option>
     </select>
 
-    <!-- Create a div for the code editor -->
     <div id="editor" style="height: 500px; width: 100%;"></div>
 
-    <!-- Create a "Run" button -->
     <button onclick="runCode()">Run</button>
 
-    <!-- Create a named output area -->
     <div id="outputArea">
         <h2>Output:</h2>
         <pre id="output"></pre>
@@ -56,17 +68,23 @@
             // Make an AJAX request to the Django server for code execution
             $.ajax({
                 type: "POST",
-                url: "/code_execution/run_code/",
+                url: "/run_code/", // Replace with the actual URL of your Django view
+                headers: {
+                    'X-CSRFToken': csrftoken  // Include CSRF token in the request header
+                },
                 data: {
                     code: code,
                     language: selectedLanguage
                 },
                 success: function(data) {
-                    // Display the result in the output area
-                    document.getElementById("output").innerText = data.result || data.error || "Unknown error";
+                    if (data.result) {
+                        document.getElementById("output").innerText = data.result;
+                    } else {
+                        document.getElementById("output").innerText = data.error;
+                    }
                 },
                 error: function() {
-                    document.getElementById("output").innerText = "Error: Failed to communicate with the server.";
+                    document.getElementById("output").innerText = "Error communicating with the server.";
                 }
             });
         }
